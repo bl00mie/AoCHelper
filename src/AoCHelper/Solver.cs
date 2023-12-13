@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Spectre.Console;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AoCHelper
 {
@@ -284,6 +286,31 @@ namespace AoCHelper
             }
         }
 
+        private static void CopyToClipboard(string s)
+        {
+            string cmd = "", options = "";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                cmd = "pbcopy";
+                options = "-pboard general -Prefer txt";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                cmd = "clip";
+            }
+            using var process = new Process();
+            process.StartInfo = new ProcessStartInfo(cmd, options)
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = false,
+                RedirectStandardInput = true
+            };
+            process.Start();
+            process.StandardInput.Write(s);
+            process.StandardInput.Close();
+            process.WaitForExit();
+        }
+
         private static async Task<ElapsedTime> SolveProblem(BaseProblem problem, Table table, double constructorElapsedTime, SolverConfiguration configuration)
         {
             var problemIndex = problem.CalculateIndex();
@@ -301,6 +328,11 @@ namespace AoCHelper
 
             (string solution2, double elapsedMillisecondsPart2) = await SolvePart(isPart1: false, problem);
             RenderRow(table, problemTitle, "Part 2", solution2, elapsedMillisecondsPart2, configuration);
+
+            if (!string.IsNullOrEmpty(solution2))
+                CopyToClipboard(solution2);
+            else if (!string.IsNullOrEmpty(solution1))
+                CopyToClipboard(solution1);
 
             if (configuration.ShowTotalElapsedTimePerDay)
             {
