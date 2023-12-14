@@ -48,6 +48,10 @@
             }
         }
 
+        public abstract Task InitializeInput();
+
+        public abstract void ProcessInput();
+
         public abstract ValueTask<string> Solve_1();
 
         public abstract ValueTask<string> Solve_2();

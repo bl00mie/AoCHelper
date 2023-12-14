@@ -13,18 +13,25 @@ namespace AoCHelper
         protected override string ClassPrefix { get; } = "Day";
 
         public override string InputFilePath
-            => Path.Combine(InputFileDirPath, $"{_year}_{_day:D2}");
+            => Path.Combine(InputFileDirPath, $"{Year}_{Day:D2}");
 
-        private int _year;
+        protected virtual int Year { get; set; }
+
         private int _day;
-        protected IEnumerable<string> Input = Enumerable.Empty<string>();
-
-        protected async Task Initialize(int year, int day = 0)
+        protected virtual int Day
         {
-            _year = year;
-            _day = day != 0 ? day : (int)CalculateIndex();
-            Input = await GetInput();
+            get
+            {
+                if (_day == default) _day = (int)CalculateIndex();
+                return _day;
+            }
+            set
+            {
+                _day = value;
+            }
         }
+
+        protected IEnumerable<string> Input = Enumerable.Empty<string>();
 
         private async Task<IEnumerable<string>> GetInput()
         {
@@ -34,7 +41,7 @@ namespace AoCHelper
                     throw new FileNotFoundException("Couldn't locate session_cookie file. Aborting");
                 var sessionCookie = File.ReadLines("../session_cookie").First();
 
-                var baseAddress = new Uri($"https://adventofcode.com/{_year}/day/{CalculateIndex()}/input");
+                var baseAddress = new Uri($"https://adventofcode.com/{Year}/day/{Day}/input");
                 var cookieContainer = new CookieContainer();
                 using var handler = new HttpClientHandler() { CookieContainer = cookieContainer };
                 using var client = new HttpClient(handler) { BaseAddress = baseAddress };
@@ -54,5 +61,12 @@ namespace AoCHelper
         }
 
         protected static ValueTask<string> Answer<T>(T ans) => ValueTask.FromResult(ans?.ToString() ?? string.Empty);
+
+        public override async Task InitializeInput()
+        {
+            Input = await GetInput();
+        }
+
+        public override void ProcessInput() { }
     }
 }

@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Spectre.Console;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace AoCHelper
 {
@@ -323,9 +322,18 @@ namespace AoCHelper
                 RenderRow(table, problemTitle, $"{problem.GetType().Name}()", "-----------", constructorElapsedTime, configuration);
             }
 
+            var sw = new Stopwatch();
+            sw.Start();
+            await problem.InitializeInput();
+            problem.ProcessInput();
+            sw.Stop();
+
+            RenderRow(table, problemTitle, "Input", "-", sw.ElapsedMilliseconds, configuration);
+
             (string solution1, double elapsedMillisecondsPart1) = await SolvePart(isPart1: true, problem);
             RenderRow(table, problemTitle, "Part 1", solution1, elapsedMillisecondsPart1, configuration);
 
+            problem.ProcessInput();
             (string solution2, double elapsedMillisecondsPart2) = await SolvePart(isPart1: false, problem);
             RenderRow(table, problemTitle, "Part 2", solution2, elapsedMillisecondsPart2, configuration);
 
