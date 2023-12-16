@@ -324,17 +324,17 @@ namespace AoCHelper
 
             var sw = new Stopwatch();
             sw.Start();
-            await problem.InitializeInput();
+            await problem.InitializeInputAsync();
             problem.ProcessInput();
             sw.Stop();
 
             RenderRow(table, problemTitle, "Input", "-", sw.ElapsedMilliseconds, configuration);
 
-            (string solution1, double elapsedMillisecondsPart1) = await SolvePart(isPart1: true, problem);
+            (string solution1, double elapsedMillisecondsPart1) = SolvePart(isPart1: true, problem);
             RenderRow(table, problemTitle, "Part 1", solution1, elapsedMillisecondsPart1, configuration);
 
             problem.ProcessInput();
-            (string solution2, double elapsedMillisecondsPart2) = await SolvePart(isPart1: false, problem);
+            (string solution2, double elapsedMillisecondsPart2) = SolvePart(isPart1: false, problem);
             RenderRow(table, problemTitle, "Part 2", solution2, elapsedMillisecondsPart2, configuration);
 
             if (!string.IsNullOrEmpty(solution2))
@@ -373,19 +373,19 @@ namespace AoCHelper
             return new ElapsedTime(constructorElapsedTime, elapsedMillisecondsPart1, elapsedMillisecondsPart2);
         }
 
-        private static async Task<(string solution, double elapsedTime)> SolvePart(bool isPart1, BaseProblem problem)
+        private static (string solution, double elapsedTime) SolvePart(bool isPart1, BaseProblem problem)
         {
             Stopwatch stopwatch = new();
             var solution = string.Empty;
 
             try
             {
-                Func<ValueTask<string>> solve = isPart1
+                Func<dynamic> solve = isPart1
                     ? problem.Solve_1
                     : problem.Solve_2;
 
                 stopwatch.Start();
-                solution = await solve();
+                solution = Convert.ToString(solve());
             }
             catch (NotImplementedException)
             {

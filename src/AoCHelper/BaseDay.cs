@@ -31,7 +31,7 @@ namespace AoCHelper
             }
         }
 
-        protected IEnumerable<string> Input = Enumerable.Empty<string>();
+        protected string[] Input = [];
 
         private async Task<IEnumerable<string>> GetInput()
         {
@@ -62,9 +62,9 @@ namespace AoCHelper
 
         protected static ValueTask<string> Answer<T>(T ans) => ValueTask.FromResult(ans?.ToString() ?? string.Empty);
 
-        public override async Task InitializeInput()
+        public override async Task InitializeInputAsync()
         {
-            Input = await GetInput();
+            Input = (await GetInput()).ToArray();
         }
 
         public override void ProcessInput() { }

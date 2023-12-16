@@ -48,12 +48,12 @@
             }
         }
 
-        public abstract Task InitializeInput();
+        public abstract Task InitializeInputAsync();
 
         public abstract void ProcessInput();
 
-        public abstract ValueTask<string> Solve_1();
+        public abstract dynamic Solve_1();
 
-        public abstract ValueTask<string> Solve_2();
+        public abstract dynamic Solve_2();
     }
 }
