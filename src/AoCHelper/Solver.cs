@@ -328,12 +328,15 @@ namespace AoCHelper
             problem.ProcessInput();
             sw.Stop();
 
-            RenderRow(table, problemTitle, "Input", "-", sw.ElapsedMilliseconds, configuration);
-
             (string solution1, double elapsedMillisecondsPart1) = SolvePart(isPart1: true, problem);
-            RenderRow(table, problemTitle, "Part 1", solution1, elapsedMillisecondsPart1, configuration);
 
+            sw.Start();
             problem.ProcessInput();
+            sw.Stop();
+
+            RenderRow(table, problemTitle, "Input", "-", sw.ElapsedMilliseconds/2, configuration);
+            RenderRow(table, problemTitle, "Part 1", solution1, elapsedMillisecondsPart1, configuration);
+            
             (string solution2, double elapsedMillisecondsPart2) = SolvePart(isPart1: false, problem);
             RenderRow(table, problemTitle, "Part 2", solution2, elapsedMillisecondsPart2, configuration);
 

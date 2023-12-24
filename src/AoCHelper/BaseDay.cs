@@ -5,7 +5,7 @@ namespace AoCHelper
     /// <summary>
     /// <see cref="BaseProblem"/> with custom <see cref="BaseProblem.ClassPrefix"/> ("Day")
     /// </summary>
-    public abstract class BaseDay : BaseProblem
+    public abstract class BaseDay(int year) : BaseProblem
     {
         /// <summary>
         /// <inheritdoc/>
@@ -15,7 +15,7 @@ namespace AoCHelper
         public override string InputFilePath
             => Path.Combine(InputFileDirPath, $"{Year}_{Day:D2}");
 
-        protected virtual int Year { get; set; }
+        protected virtual int Year { get; set; } = year;
 
         private int _day;
         protected virtual int Day
